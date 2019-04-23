@@ -14,25 +14,38 @@
 <body>
 	<div class="row">
 		<div class="col-sm-3"></div>
-		<div class="col-sm-6 col-sm-offset-2">
+		<div class="col-sm-6">
 			<div class="content">
 				<div id="ball"></div>
 			</div>
 		</div>
 	</div>
+	<br>
 	<div class="row">
-			<div class="col-sm-5"></div>
-			<div class="col-sm-2">
+			<div class="col-sm-3">
+				<label>Vx0<input id='Vx0' type="number" value='0.1' step='0.1'></label>
+				<label>Vy0<input id='Vy0' type="number" value='-3' step='0.1'></label>
+			</div>
+			<div class="col-sm-4">
 				<div class="center controls">
 					<div class="row">
-						<div class="col-sm-6">
-							<button class='btn btn-primary' onclick="start();">Start</button>
+						<div class="col-xs-3">
+							<button id='start-btn' class='btn btn-primary' onclick="start();">Start</button>
 						</div>
-						<div class="col-sm-6">
-							<button class='btn btn-primary' onclick="stop();">Stop</button>
+						<div class="col-xs-3">
+							<button id='stop-btn' class='btn btn-primary' onclick="stop();">Stop</button>
+						</div>
+						<div class="col-xs-3">
+							<button id='reset-btn' class='btn btn-primary' onclick="reset();">Reset</button>
+						</div>
+						<div class="col-xs-3">
+							<button id='step-btn' class='btn btn-primary' onclick="step();">Step</button>
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="col-sm-3">
+				<p>t=<span id='time'></span></p>
 			</div>
 	</div>
 </body>
