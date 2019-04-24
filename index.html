@@ -5,48 +5,21 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>Proyecto de Modelo</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="css/bootstrap.min.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="css/main.css" />
-	<script src="js/jquery.js"></script>
-	<script src="js/bootstrap.js"></script>
-	<script src="js/main.js"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/vue.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/ball.js"></script>
+	<script src="js/controls.js"></script>
+	<script src="js/graph.js"></script>
+	<script src="js/enviroment.js"></script>
 </head>
 <body>
-	<div class="row">
-		<div class="col-sm-3"></div>
-		<div class="col-sm-6">
-			<div class="content">
-				<div id="ball"></div>
-			</div>
-		</div>
+	<div id="app">
+		<enviroment id="enviroment"></enviroment>
 	</div>
-	<br>
-	<div class="row">
-			<div class="col-sm-3">
-				<label>Vx0<input id='Vx0' type="number" value='0.1' step='0.1'></label>
-				<label>Vy0<input id='Vy0' type="number" value='-3' step='0.1'></label>
-			</div>
-			<div class="col-sm-4">
-				<div class="center controls">
-					<div class="row">
-						<div class="col-xs-3">
-							<button id='start-btn' class='btn btn-primary' onclick="start();">Start</button>
-						</div>
-						<div class="col-xs-3">
-							<button id='stop-btn' class='btn btn-primary' onclick="stop();">Stop</button>
-						</div>
-						<div class="col-xs-3">
-							<button id='reset-btn' class='btn btn-primary' onclick="reset();">Reset</button>
-						</div>
-						<div class="col-xs-3">
-							<button id='step-btn' class='btn btn-primary' onclick="step();">Step</button>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="col-sm-3">
-				<p>t=<span id='time'></span></p>
-			</div>
-	</div>
+	
+	<script src="js/main.js"></script>
 </body>
 </html>
