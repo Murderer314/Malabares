@@ -63,7 +63,19 @@ Vue.component('graph', {
 					'immediate': false
 				}
 			)
-    },
+	},
+	watch:{
+		amount: function(newVal,oldVal){
+			if(this.values.length>newVal){
+				this.values.splice(newVal,this.values.length-newVal)
+			}else if(this.values.length<newVal){
+				diff = newVal-this.values.length
+				for (let i = 0; i < diff; i++) {
+					this.values.push({id: this.values.length+i})
+				}
+			}
+		}
+	},
 	props: {
 		'balls': Array,
 		'time': Number
@@ -83,32 +95,33 @@ Vue.component('graph', {
 					v-bind:radius=item.radius
 					v-bind:r=item.r
 					v-bind:ballStyle=item.ballStyle
-					v-bind:maxBounce=4
+					v-bind:maxBounce=200
+					v-bind:t0=item.t0
 				/>
 			</div>
 		
 			<label> Amount of balls: <input v-model.number="amount" type="number"></label>
 		</div>
 		<div class="col-md-5">
-		<div class="table-responsive">
-			<table class='table table-bordered table-striped table-condensed' style='background-color: black; color: white'>
-				<tr>
-					<th style="width: 30px">Id</th>
-					<th style="width: 25px"></th>
-					<th style="width: 175px">X</th>
-					<th style="width: 175px">Y</th>
-					<th style="width: 175px">Vx</th>
-					<th style="width: 175px">Vy</th>
-				</tr>
-				<tr v-for='ball in balls'>
-					<td>{{ball.id}}</td>
-					<td><div v-bind:style="[ball.ballStyle,{position: 'static'}]"></div></td>
-					<td v-if="values[ball.id]">{{values[ball.id].x.toPrecision(6)}}</td>
-					<td v-if="values[ball.id]">{{values[ball.id].y.toPrecision(6)}}</td>
-					<td v-if="values[ball.id]">{{values[ball.id].vx.toPrecision(6)}}</td>
-					<td v-if="values[ball.id]">{{values[ball.id].vy.toPrecision(6)}}</td>
-				</tr>
-			</table>
+			<div class="table-responsive">
+				<table class='table table-bordered table-striped table-condensed' style='background-color: black; color: white'>
+					<tr>
+						<th style="width: 15px">Id</th>
+						<th style="width: 15px"></th>
+						<th style="width: 75px">X</th>
+						<th style="width: 75px">Y</th>
+						<th style="width: 100px">Vx</th>
+						<th style="width: 100px">Vy</th>
+					</tr>
+					<tr v-for='ball in amount'>
+						<td>{{ball}}</td>
+						<td><div v-bind:style="[balls[ball-1].ballStyle,{position: 'static'}]"></div></td>
+						<td v-if="values[ball-1]">{{values[ball-1].x.toPrecision(6)}}</td>
+						<td v-if="values[ball-1]">{{values[ball-1].y.toPrecision(6)}}</td>
+						<td v-if="values[ball-1]">{{values[ball-1].vx.toPrecision(6)}}</td>
+						<td v-if="values[ball-1]">{{values[ball-1].vy.toPrecision(6)}}</td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>

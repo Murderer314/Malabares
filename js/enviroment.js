@@ -9,10 +9,11 @@ Vue.component('enviroment', {
 		time: 0,
 		balls: [
 			{
-				id: 0,
+				id: 1,
 				v0x: 1,
 				v0y: -5,
 				r  : 0.8,
+				t0: 0.4,
 				radius: 20,
 				handsHeight: 2,
 				ballStyle: {

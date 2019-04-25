@@ -19,6 +19,27 @@ Vue.component('ball', {
 		tHeightMax: function(v0y) {
 			return v0y/this.gravity;
 		},
+		audio: function(){
+			const ac = new AudioContext();
+			var real = new Float32Array(2);
+			var imag = new Float32Array(2);
+			// var ac = new AudioContext();
+			// var osc = ac.createOscillator();
+	
+			real[0] = 0;
+			imag[0] = 0;
+			real[1] = 1;
+			imag[1] = 0;
+	
+			var wave = ac.createPeriodicWave(real, imag, {disableNormalization: true});
+
+			let osc = ac.createOscillator();
+			osc.setPeriodicWave(wave);
+			osc.frequency.value = 300;
+			osc.connect(ac.destination);
+			osc.start();
+			osc.stop(ac.currentTime + 0.06);
+		},
 		llamar(){
 			alert("jajaja");
 		}
@@ -26,9 +47,10 @@ Vue.component('ball', {
 	watch: {
 		// whenever question changes, this function will run
 		t: function (newT, oldT) {
-			if(this.t>this.bounce[this.current_bounce+1]){
+			if(this.t-this.t0>this.bounce[this.current_bounce+1]){
+				this.audio()
 				this.current_bounce = this.current_bounce+1
-			}else if(this.t < this.bounce[1]){
+			}else if(this.t-this.t0 < this.bounce[1]){
 				this.current_bounce = 0
 			}
 		}
@@ -67,10 +89,10 @@ Vue.component('ball', {
 			return result;
 		},
 		current_t: function(){
-			return this.t-this.bounce[this.current_bounce]
+			return Math.max(0,this.t-this.bounce[this.current_bounce]-this.t0)
 		},
 		x: function(){
-			return this.dx(0,this.v0x,this.t);
+			return this.dx(0,this.v0x,Math.max(0,this.t-this.t0));
 		},
 		y: function(){
 			if (this.current_bounce == 0){
@@ -81,7 +103,7 @@ Vue.component('ball', {
 		},
 		vy: function(){
 			if (this.current_bounce == 0){
-				return this.Vy(this.v0y,this.t)
+				return this.Vy(this.v0y,Math.max(0,this.t-this.t0))
 			}else{
 				return this.Vy(this.initial_velocity_after_bounce[this.current_bounce],this.current_t)
 			}
