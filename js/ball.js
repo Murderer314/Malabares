@@ -42,42 +42,45 @@ Vue.component('ball', {
 		},
 		llamar(){
 			alert("jajaja");
-		},
-		validator: function (value) {
-			// The value must match one of these strings
-			val=Number(value);
-			console.log(val)
-			if(isNaN(val)){
-				return 0;
-			}else{
-				return val;
-			}
 		}
 	},
 	watch: {
-		// whenever question changes, this function will run
 		t: function (newT, oldT) {
-			if(this.t-this.t0>this.bounce[this.current_bounce+1]){
-				this.audio()
-				this.current_bounce = this.current_bounce+1
-			}else if(this.t-this.t0 < this.bounce[1]){
-				this.current_bounce = 0
+			that = this
+			index = this.bounce.findIndex(function(currentValue){return currentValue>newT-that.delay})-1
+			if(index<0) index=0
+			if(index != this.current_bounce){
+				if(index != 0 && this.x != this.handsSeparation && !this.catched) this.audio()
+				this.current_bounce = index
 			}
 		}
 	},
 	computed:{
-		time_to_max_height: function () {
-			return v0y/this.gravity;
+		v0x: function(){
+			// v0x = 1
+			v0x = this.handsHeight/(this.tb*Math.pow(this.r,this.maxBounce))
+			return v0x
 		},
-		time_first_bounce: function(){
-			D = Math.pow(this.v0y,2)+2*(this.gravity)*this.handsHeight;
-			S1 = (-this.v0y+ Math.sqrt(D))/(this.gravity);
-			S2 = (-this.v0y- Math.sqrt(D))/(this.gravity);
-			return -Math.min(S1,S2);
+		tb: function(){
+			a=(-this.gravity)/2
+			b=(-this.final_velocity_before_bounce)*Math.pow(this.r,this.maxBounce)
+			c=-this.handsHeight
+			D = Math.pow(b,2)-4*a*c
+			S1=(-b+Math.sqrt(D))/(2*a)
+			S2=(-b-Math.sqrt(D))/(2*a)
+			S = Math.min(S1,S2)
+			S = this.handsHeight/Math.pow(this.r,this.maxBounce)
+			return S
+		},
+		time_to_max_height: function () {
+			return this.v0y/this.gravity;
+		},
+		v0y: function(){
+			return (this.gravity*(this.time_first_bounce)/2)-this.handsHeight/(this.time_first_bounce)
 		},
 		final_velocity_before_bounce: function(){
-			t0 = this.time_first_bounce;
-			return this.v0y - this.gravity*t0;
+			t = this.time_first_bounce;
+			return this.v0y - this.gravity*t;
 		},
 		initial_velocity_after_bounce: function(){
 			result = [];
@@ -92,47 +95,69 @@ Vue.component('ball', {
 			result = [0];
 			t0 = this.time_first_bounce;
 			v01 = this.final_velocity_before_bounce;
-			for (let i = 0; i < this.maxBounce; i++) {
+			for (let i = 0; i <= this.maxBounce; i++) {
 				bi = t0-(2*v01/this.gravity)*((this.r-Math.pow(this.r,i+1))/(1-this.r))
 				result.push(bi);
 			}
 			return result;
 		},
+		x_for_bounce: function () {
+			resultt = [0];
+			currentVel = this.v0x;
+			for (let i = 0; i <= this.maxBounce; i++) {
+				vx = this.dx(resultt[i], currentVel, this.bounce[i+1]-this.bounce[i])
+				resultt.push(vx);
+				currentVel*=this.r
+			}
+			return resultt;	
+		},
 		current_t: function(){
-			return Math.max(0,this.t-this.bounce[this.current_bounce]-this.t0)
+			return Math.max(0,this.t-this.bounce[this.current_bounce]-this.delay)
 		},
 		x: function(){
-			return this.dx(this.x0,this.v0x,Math.max(0,this.t-this.t0));
+			// dx = this.dx(this.hand*this.handsSeparation,this.vx*(1-(this.hand*2)),Math.max(0,this.t-this.delay));
+			dx = this.dx(this.hand*this.handsSeparation+((1-(this.hand*2))*this.x_for_bounce[this.current_bounce]),this.vx*(1-(this.hand*2)),this.current_t);
+			// return Math.max(0,Math.min(this.handsSeparation,dx));
+			return dx
 		},
 		y: function(){
 			if (this.current_bounce == 0){
-				return this.dy(this.handsHeight,this.v0y,this.current_t)
+				dy = this.dy(this.handsHeight,this.v0y,this.current_t)
 			}else{
-				return this.dy(0,this.initial_velocity_after_bounce[this.current_bounce-1],this.current_t)
+				dy = this.dy(0,this.initial_velocity_after_bounce[this.current_bounce-1],this.current_t)
 			}
+			// if(this.x >= this.handsSeparation){
+			// 	return this.handsHeight
+			// }else{
+				return dy
+			// }
 		},
 		vy: function(){
 			if (this.current_bounce == 0){
-				return this.Vy(this.v0y,Math.max(0,this.t-this.t0))
+				vy = this.Vy(this.v0y,this.current_t)
 			}else{
-				return this.Vy(this.initial_velocity_after_bounce[this.current_bounce],this.current_t)
+				vy = this.Vy(this.initial_velocity_after_bounce[this.current_bounce],this.current_t)
 			}
+			// if(this.x > this.handsSeparation){
+			// 	return 0
+			// }else{
+			// 	return vy
+			// }
+			return vy
 		},
 		vx: function(){
-			val=Number(this.v0x);
-			if(isNaN(val)){
-				return 0;
-			}else{
-				return val;
-			}
+			return this.v0x*Math.pow(this.r,this.current_bounce)
+		},
+		catched: function(){
+			return (this.x >= this.handsSeparation || this.x <= 0)
 		},
 		position: function(){
 			dy = this.y
 			dx = this.x
 			// realY = dy;
-			// realY = ((this.$parent.height-20)*dy)/100;
-			realX = ((this.$parent.width-this.radius)*dx)/4;
-			realY = ((this.$parent.height-this.radius)*dy)/4;
+			// realY = ((this.$parent.height-20)*dy)/100;		//20 es el radio de la pelota
+			realX = ((this.$parent.width-20)*dx)/4;
+			realY = ((this.$parent.height-20)*dy)/4;
 			return {
 				'bottom': realY+'px',
 				'left': realX+'px'
@@ -141,7 +166,7 @@ Vue.component('ball', {
 		myStyle: function(){
 			return {
 				"background-color": this.color,
-				'bottom': this.height+'px',
+				'bottom': this.handsHeight+'px',
 				'border-radius': '100%',
 				'width': 	'20px',
 				'height': 	'20px',
@@ -150,60 +175,49 @@ Vue.component('ball', {
 		}
 	},
 	props: {
-		'id':{
-			type: [String, Number],
+		'id':{//
+			type: Number,
 			default: 0
-		},
+		},//
 		't': {					//Instante de tiempo actual
-			type: [String, Number],
+			type: Number,
 			default: 0
-		},
-		'v0x': {				//Velocidad inicial en X
-			type: [String, Number],
-			default: 0
-		},
-		'v0y': {				//Velocidad inicial en Y
-			type: [String, Number],
-			default: 0
-		},
-		'handsHeight': {		//Distancia entre manos
-			type: [String, Number],
-			default: 2
-		},
-		'radius': {				//Radio de la pelota
-			type: [String, Number],
-			default: 20
+		},//
+		'color': {
+			type: String,
+			default: 'yellow'
 		},
 		'r': {					//Coeficiente de restitucion
-			type: [String, Number],
+			type: Number,
 			default: 0
 		},
-		't0': {					//Instante de tiempo en el que sale la pelota
-			type: [String, Number],
+		'time_first_bounce': {	//t0+tfb = primer rebote
+			type: Number,
+			default: 1
+		},
+		'delay': {					//Instante de tiempo en el que sale la pelota
+			type: Number,
 			default: 0
 		},
 		'maxBounce': {			//Maxima cantidad de rebotes
-			type: [String, Number],
+			type: Number,
 			default: 5
 		},
-		'interval': {			//intervalo de los steps
-			type: [String, Number],
+		'hand': {
+			type: Number,
 			default: 0
 		},
-		'color': {
-			type: String,
-			default: 'yellow'},
-		'height':{
-			type: [String, Number],
+		'handsHeight': {		//Altura de las manos
+			type: Number,
 			default: 2
 		},
-		'x0': {					//Posicion inicial de la pelota
-			type: [String, Number],
-			default: 0
-		},
+		'handsSeparation': {	//Distancia entre manos
+			type: Number,
+			default: 2
+		}
 	},
 	template: `
-		<div v-bind:style="[myStyle,position]">
+		<div v-bind:style="[myStyle,position]" v-if="t>=delay & !catched">
 		</div>
 	`
 });

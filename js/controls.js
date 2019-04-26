@@ -11,7 +11,10 @@ Vue.component('controls', {
 			this.$emit('reset_event')
 		},
 		step: function(){
-			this.$emit('step_event')
+			this.$emit('step_event',1)
+		},
+		stepBack: function(){
+			this.$emit('step_event',-1)
 		},
 		start: function(){
 			this.$emit('start_event')
@@ -38,7 +41,6 @@ Vue.component('controls', {
 		</div>
 		<div class="col-sm-6">
 			<div class="col-sm-3">
-				
 			</div>
 			<div class="col-sm-4">
 				<div class="center controls">
@@ -46,6 +48,7 @@ Vue.component('controls', {
 					<button id='stop-btn' class='btn btn-primary' @click="stop">Stop</button>
 					<button id='reset-btn' class='btn btn-primary' @click="reset">Reset</button>
 					<button id='step-btn' class='btn btn-primary' @click="step">Step</button>
+					<button id='step-btn' class='btn btn-primary' @click="stepBack">StepBack</button>
 				</div>
 			</div>
 			<div class="col-sm-3">
