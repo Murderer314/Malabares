@@ -42,6 +42,16 @@ Vue.component('ball', {
 		},
 		llamar(){
 			alert("jajaja");
+		},
+		validator: function (value) {
+			// The value must match one of these strings
+			val=Number(value);
+			console.log(val)
+			if(isNaN(val)){
+				return 0;
+			}else{
+				return val;
+			}
 		}
 	},
 	watch: {
@@ -92,7 +102,7 @@ Vue.component('ball', {
 			return Math.max(0,this.t-this.bounce[this.current_bounce]-this.t0)
 		},
 		x: function(){
-			return this.dx(0,this.v0x,Math.max(0,this.t-this.t0));
+			return this.dx(this.x0,this.v0x,Math.max(0,this.t-this.t0));
 		},
 		y: function(){
 			if (this.current_bounce == 0){
@@ -108,6 +118,14 @@ Vue.component('ball', {
 				return this.Vy(this.initial_velocity_after_bounce[this.current_bounce],this.current_t)
 			}
 		},
+		vx: function(){
+			val=Number(this.v0x);
+			if(isNaN(val)){
+				return 0;
+			}else{
+				return val;
+			}
+		},
 		position: function(){
 			dy = this.y
 			dx = this.x
@@ -119,43 +137,73 @@ Vue.component('ball', {
 				'bottom': realY+'px',
 				'left': realX+'px'
 			}
+		},
+		myStyle: function(){
+			return {
+				"background-color": this.color,
+				'bottom': this.height+'px',
+				'border-radius': '100%',
+				'width': 	'20px',
+				'height': 	'20px',
+				'position': 'absolute'
+			} 
 		}
 	},
 	props: {
+		'id':{
+			type: [String, Number],
+			default: 0
+		},
 		't': {					//Instante de tiempo actual
-			type: Number,
-			default: 0},
+			type: [String, Number],
+			default: 0
+		},
 		'v0x': {				//Velocidad inicial en X
-			type: Number,
-			default: 0},
+			type: [String, Number],
+			default: 0
+		},
 		'v0y': {				//Velocidad inicial en Y
-			type: Number,
-			default: 0},
+			type: [String, Number],
+			default: 0
+		},
 		'handsHeight': {		//Distancia entre manos
-			type: Number,
-			default: 0},
+			type: [String, Number],
+			default: 2
+		},
 		'radius': {				//Radio de la pelota
-			type: Number,
-			default: 20},
+			type: [String, Number],
+			default: 20
+		},
 		'r': {					//Coeficiente de restitucion
-			type: Number,
-			default: 0},
+			type: [String, Number],
+			default: 0
+		},
 		't0': {					//Instante de tiempo en el que sale la pelota
-			type: Number,
-			default: 0},
+			type: [String, Number],
+			default: 0
+		},
 		'maxBounce': {			//Maxima cantidad de rebotes
-			type: Number,
-			default: 5},
+			type: [String, Number],
+			default: 5
+		},
 		'interval': {			//intervalo de los steps
-			type: Number,
-			default: 0},
-		'ballStyle': {
-			type: Object,
-			default: {}
-		}
+			type: [String, Number],
+			default: 0
+		},
+		'color': {
+			type: String,
+			default: 'yellow'},
+		'height':{
+			type: [String, Number],
+			default: 2
+		},
+		'x0': {					//Posicion inicial de la pelota
+			type: [String, Number],
+			default: 0
+		},
 	},
 	template: `
-		<div v-bind:style="[ballStyle,position]">
+		<div v-bind:style="[myStyle,position]">
 		</div>
 	`
 });

@@ -29,7 +29,7 @@ Vue.component('controls', {
 			// }
 		},
 	},
-	props: {'v0y': Number,'v0x': Number, time:Number, interval: Number},
+	props: {time:Number, interval: Number},
 	// props: ['v0x','v0y'],
 	style: {color: '#000'},
 	template: `
@@ -38,8 +38,7 @@ Vue.component('controls', {
 		</div>
 		<div class="col-sm-6">
 			<div class="col-sm-3">
-				<label>Vx0<input id='Vx0' v-bind:value="v0x" v-on:input="$emit('v0x', $event.target.value)" step='0.01'></label>
-				<label>Vy0<input id='Vy0' v-bind:value="v0y" v-on:input="$emit('v0y', $event.target.value)" step='0.01'></label>
+				
 			</div>
 			<div class="col-sm-4">
 				<div class="center controls">
@@ -51,8 +50,6 @@ Vue.component('controls', {
 			</div>
 			<div class="col-sm-3">
 				<p>t={{time}}</p>
-				<p>x=<span id='x'></span></p>
-				<p>y=<span id='y'></span></p>
 			</div>
 		</div>
 	</div>

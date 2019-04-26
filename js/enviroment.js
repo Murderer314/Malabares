@@ -14,7 +14,7 @@ Vue.component('enviroment', {
 				v0y: -5,
 				r  : 0.8,
 				t0: 0.4,
-				radius: 20,
+				// radius: 20,
 				handsHeight: 2,
 				ballStyle: {
 					"background-color":"yellow",
@@ -25,6 +25,40 @@ Vue.component('enviroment', {
 					'position': 'absolute'
 				}
 			},
+			// {
+			// 	id: 1,
+			// 	v0x: 1.1,
+			// 	v0y: 5,
+			// 	r  : 0.8,
+			// 	t0: 1,
+			// 	radius: 20,
+			// 	handsHeight: 2,
+			// 	ballStyle: {
+			// 		"background-color":"green",
+			// 		'bottom': '10px',
+			// 		'border-radius': '100%',
+			// 		'width': 	'20px',
+			// 		'height': 	'20px',
+			// 		'position': 'absolute'
+			// 	}
+			// },
+			// {
+			// 	id: 2,
+			// 	v0x: 1.1,
+			// 	v0y: -4,
+			// 	r  : 0.8,
+			// 	t0: 1.02,
+			// 	radius: 20,
+			// 	handsHeight: 2,
+			// 	ballStyle: {
+			// 		"background-color":"green",
+			// 		'bottom': '10px',
+			// 		'border-radius': '100%',
+			// 		'width': 	'20px',
+			// 		'height': 	'20px',
+			// 		'position': 'absolute'
+			// 	}
+			// },
 			// {
 			// 	id: 1,
 			// 	v0x: 1,
@@ -75,20 +109,12 @@ Vue.component('enviroment', {
 	template: `
 		<div class="container-fluid">
 			<graph 
-				v-bind:v0x="v0x"
-				v-bind:v0y="v0y"
-				v-on:v0x="v0x = $event"
-				v-on:v0y="v0y = $event"
 				v-bind:balls="balls"
 				v-bind:time="time"
 				ref="graph">
 			</graph>
 			<controls
 				v-bind:time	= "time"
-				v-bind:v0x	= "v0x"
-				v-bind:v0y	= "v0y"
-				v-on:v0x="v0x = $event"
-				v-on:v0y="v0y = $event"
 				v-on:start_event = "start"
 				v-on:stop_event  = "stop"
 				v-on:reset_event = "reset"
