@@ -2,8 +2,8 @@ Vue.component('intervals-item', {
 	data: function () {
 	  return {
 		delay: 0,
-		time_first_bounce: 1,
-		bounce: 5
+		time_first_bounce: 1.5,
+		bounce: 2
 	  }
 	},
 	methods:{

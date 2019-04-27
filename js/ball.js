@@ -57,10 +57,30 @@ Vue.component('ball', {
 	},
 	computed:{
 		v0x: function(){
-			v0x = 1
-			// v0x = this.handsSeparation/this.sumTiXr
+			// v0x = 1
+			v0x = this.handsSeparation/this.sumTiXr
 			// v0x = this.handsHeight/(this.tb*Math.pow(this.r,this.maxBounce))
 			return v0x
+		},
+		ti:function(){
+			tiResult=[]
+			for (let i = 1; i <= this.maxBounce; i++) {
+				tiResult.push(this.bounce[i]-this.bounce[i-1])
+			}
+			return tiResult
+		},
+		tiXr: function(){
+			tiXrResult=[]
+			for (let i = 0; i < this.maxBounce; i++) {
+				tiXrResult.push(this.ti[i]*Math.pow(this.r,i))
+			}
+			tiXrResult.push(this.tb*Math.pow(this.r,this.maxBounce))
+			return tiXrResult
+		},
+		sumTiXr: function(){
+			return this.tiXr.reduce(function(a,b){
+				return a + b
+			  }, 0);
 		},
 		tb: function(){
 			a=(-this.gravity)/2
@@ -69,8 +89,8 @@ Vue.component('ball', {
 			D = Math.pow(b,2)-4*a*c
 			S1=(-b+Math.sqrt(D))/(2*a)
 			S2=(-b-Math.sqrt(D))/(2*a)
-			S = Math.min(S1,S2)
-			S = this.handsHeight/Math.pow(this.r,this.maxBounce)
+			// S = Math.min(S1,S2)		//min para cuando suba, max para cuando baje
+			S = (S1+S2)/2
 			return S
 		},
 		time_to_max_height: function () {
@@ -84,40 +104,44 @@ Vue.component('ball', {
 			return this.v0y - this.gravity*t;
 		},
 		initial_velocity_after_bounce: function(){
-			result = [];
+			iVAFResult = [];
 			v01 = -this.final_velocity_before_bounce;
 			for (let i = 0; i <= this.maxBounce; i++) {
 				vi = v01*Math.pow(this.r,i+1)
-				result.push(vi);
+				iVAFResult.push(vi);
 			}
-			return result;
+			return iVAFResult;
 		},
 		bounce: function(){
-			result = [0];
+			bounceResult = [0];
 			t0 = this.time_first_bounce;
 			v01 = this.final_velocity_before_bounce;
 			for (let i = 0; i <= this.maxBounce; i++) {
 				bi = t0-(2*v01/this.gravity)*((this.r-Math.pow(this.r,i+1))/(1-this.r))
-				result.push(bi);
+				bounceResult.push(bi);
 			}
-			return result;
+			return bounceResult;
 		},
 		x_for_bounce: function () {
-			resultt = [0];
+			xForBounceResult = [0];
 			currentVel = this.v0x;
 			for (let i = 0; i <= this.maxBounce; i++) {
-				vx = this.dx(resultt[i], currentVel, this.bounce[i+1]-this.bounce[i])
-				resultt.push(vx);
+				vx = this.dx(xForBounceResult[i], currentVel, this.bounce[i+1]-this.bounce[i])
+				xForBounceResult.push(vx);
 				currentVel*=this.r
 			}
-			return resultt;	
+			return xForBounceResult;	
 		},
 		current_t: function(){
 			return Math.max(0,this.t-this.bounce[this.current_bounce]-this.delay)
 		},
 		x: function(){
 			// dx = this.dx(this.hand*this.handsSeparation,this.vx*(1-(this.hand*2)),Math.max(0,this.t-this.delay));
-			dx = this.dx(this.hand*this.handsSeparation+((1-(this.hand*2))*this.x_for_bounce[this.current_bounce]),this.vx*(1-(this.hand*2)),this.current_t);
+			X0 = this.hand*this.handsSeparation
+			position = X0 + ((1-(this.hand*2))*this.x_for_bounce[this.current_bounce])
+			orientation = (1-(this.hand*2))
+			velocity = this.vx*orientation
+			dx = this.dx(position,velocity,this.current_t);
 			// return Math.max(0,Math.min(this.handsSeparation,dx));
 			return dx
 		},
