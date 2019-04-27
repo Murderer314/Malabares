@@ -57,8 +57,9 @@ Vue.component('ball', {
 	},
 	computed:{
 		v0x: function(){
-			// v0x = 1
-			v0x = this.handsHeight/(this.tb*Math.pow(this.r,this.maxBounce))
+			v0x = 1
+			// v0x = this.handsSeparation/this.sumTiXr
+			// v0x = this.handsHeight/(this.tb*Math.pow(this.r,this.maxBounce))
 			return v0x
 		},
 		tb: function(){
